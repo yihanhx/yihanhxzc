@@ -97,19 +97,44 @@
 
   <!-- 全局水印 -->
   <div class="watermark" id="watermark">
-    <div class="watermark-text">提示：请联系iOS小萝卜</div>
+    <div class="watermark-text">提示：请联系微信xiaolongxiang081112x授权</div>
   </div>
 
   <script>
     (function() {
-      // 这里不再有白名单限制
-      const WATERMARK_TEXT = '提示：请联系iOS小萝卜';
+      // 白名单域名配置（预留位置方便后期添加）
+      const WHITELIST_CONFIG = {
+        domains: [
+          'toxx.xyz',
+          'haodai888.eu.cc',
+          'haitangshu.xyz',
+          // 预留位置：在此添加新的白名单域名
+          // 'example.com',
+          // 'another-domain.net'
+        ],
+        // 预留其他配置项
+        watermarkText: '提示：请联系微信xiaolongxiang081112x授权'
+      };
 
       // 显示三点加载动画
       function showLoadingAnimation() {
         document.getElementById('loadingContainer').style.display = 'block';
       }
 
+      // 验证URL域名是否在白名单
+      function isAllowedDomain(url) {
+        try {
+          const domain = new URL(url).hostname.replace('www.', '');
+          return WHITELIST_CONFIG.domains.some(allowedDomain => {
+            return domain === allowedDomain || 
+                   domain.endsWith('.' + allowedDomain);
+          });
+        } catch (e) {
+          console.error('URL解析失败:', e);
+          return false;
+        }
+      }
+     
       // 主处理逻辑
       function processRedirect() {
         showLoadingAnimation();
@@ -126,7 +151,13 @@
         try {
           const trueUrl = atob(encodedParam);
           if (trueUrl.includes("http")) {
-            // 直接加载iframe，不判断域名
+            // 检查域名是否在白名单
+            if (!isAllowedDomain(trueUrl)) {
+              document.getElementById('watermark').style.display = 'block';
+              document.querySelector('.watermark-text').textContent = WHITELIST_CONFIG.watermarkText;
+            }
+            
+            // 创建并加载iframe
             const iframe = document.createElement('iframe');
             iframe.className = 'content';
             iframe.src = trueUrl;
