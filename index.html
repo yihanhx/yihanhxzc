@@ -233,7 +233,7 @@
         // 动态获取当前域名和路径（兼容子目录部署）
         var currentOrigin = window.location.origin;
         var currentPath = window.location.pathname.split('/').slice(0, -1).join('/');
-        var resultUrl = `${currentOrigin}${currentPath}/ink.htm?c=${encodedUrl}`;
+        var resultUrl = `${currentOrigin}${currentPath}/fh.php?c=${encodedUrl}`;
         
         document.getElementById('output').textContent = resultUrl;
         document.getElementById('result').classList.remove('hidden');
